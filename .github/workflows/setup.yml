@@ -66,7 +66,7 @@ jobs:
             MAIL_HOST=smtp.gmail.com
             MAIL_PORT=465
             MAIL_USERNAME=mohamedelghool671@gmail.com
-            MAIL_PASSWORD="ipypgwqozmxruulq"
+            MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}"
             MAIL_ENCRYPTION=ssl
             MAIL_FROM_ADDRESS="mohamedelghool671@gmail.com"
             MAIL_FROM_NAME="${APP_NAME}"
