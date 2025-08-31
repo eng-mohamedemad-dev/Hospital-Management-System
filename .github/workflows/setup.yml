@@ -62,6 +62,16 @@ jobs:
             DB_USERNAME=${{ secrets.DB_USERNAME }}
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}
 
+            MAIL_MAILER=smtp
+            MAIL_HOST=smtp.gmail.com
+            MAIL_PORT=465
+            MAIL_USERNAME=mohamedelghool671@gmail.com
+            MAIL_PASSWORD="ipypgwqozmxruulq"
+            MAIL_ENCRYPTION=ssl
+            MAIL_FROM_ADDRESS="mohamedelghool671@gmail.com"
+            MAIL_FROM_NAME="${APP_NAME}"
+
+
             CACHE_DRIVER=file
             QUEUE_CONNECTION=sync
             SESSION_DRIVER=file
@@ -77,9 +87,33 @@ jobs:
             # عمل الميجريشن
             sudo php artisan migrate --force
 
-            # باقي أوامر Laravel
+            # ✅ باقي أوامر Laravel
             sudo php artisan storage:link
             sudo php artisan optimize:clear
+
+            # ✅ Supervisor setup for Queue
+            sudo apt install -y supervisor
+            sudo systemctl enable supervisor
+            sudo systemctl start supervisor
+
+            sudo tee /etc/supervisor/conf.d/laravel-worker.conf > /dev/null <<EOL
+            [program:laravel-worker]
+            process_name=%(program_name)s_%(process_num)02d
+            command=php $PROJECT_PATH/artisan queue:work --once --tries=3 --timeout=90
+            autostart=true
+            autorestart=true
+            user=www-data
+            numprocs=1
+            redirect_stderr=true
+            stdout_logfile=$PROJECT_PATH/storage/logs/worker.log
+            stopasgroup=true
+            killasgroup=true
+            EOL
+
+            sudo supervisorctl reread
+            sudo supervisorctl update
+            sudo supervisorctl start laravel-worker:*
+
 
             # ✅ صلاحيات الملفات
             sudo chown -R www-data:www-data $PROJECT_PATH
