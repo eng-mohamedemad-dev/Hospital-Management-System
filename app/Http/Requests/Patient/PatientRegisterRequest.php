@@ -15,7 +15,7 @@ class PatientRegisterRequest extends BaseRequest
     {
         return [
             'email' => 'required|email|unique:patients,email',
-            'phone' => 'required|string|max:255',
+            'phone' => 'required|string|max:255|unique:patients,phone',
             'password' => 'required|string|min:8',
         ];
     }

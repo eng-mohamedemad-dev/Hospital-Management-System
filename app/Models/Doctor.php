@@ -24,7 +24,7 @@ class Doctor extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'specialist',
+        'specialist_id',
         'hospital',
         'about',
         'working_time',
@@ -34,6 +34,9 @@ class Doctor extends Authenticatable
         'image',
         'email',
         'password',
+        'reviews_count',
+        'reviews_sum',
+        'reviews_avg',
     ];
 
     /**
@@ -64,5 +67,15 @@ class Doctor extends Authenticatable
     public function verificationCodes(): MorphMany
     {
         return $this->morphMany(VerificationCode::class, 'user');
+    }
+
+    public function specialist()
+    {
+        return $this->belongsTo(Specialist::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 }
