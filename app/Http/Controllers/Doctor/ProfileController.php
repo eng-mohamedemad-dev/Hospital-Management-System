@@ -27,11 +27,13 @@ class ProfileController extends Controller
         return $this->success('Doctor profile retrieved successfully', new DoctorResource($doctor));
     }
 
-    public function updateProfile(Request $request, $doctor)
+
+    public function updateProfile(Request $request)
     {
         $data   = $request->all();
-        $doctor = $this->profileService->updateProfile($data,$doctor);
+        $doctor = Doctor::find(auth('doctor')->id());
 
+        // dd($doctor);
         if(!$doctor)
         {
             return $this->error('You are not authorized to update this profile');

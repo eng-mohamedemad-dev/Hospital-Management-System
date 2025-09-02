@@ -16,10 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('hospital');
             $table->text('about');
-            // $table->string('working_time')->nullable();
             $table->string('str')->nullable(); // License number
             $table->integer('experience')->nullable();
-            // $table->text('address')->nullable();
             $table->string('image')->nullable();
             $table->string('email')->unique();
             $table->string('password');

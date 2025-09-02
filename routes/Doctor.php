@@ -35,8 +35,8 @@ Route::prefix('doctor')->group(function ()
             Route::controller(ProfileController::class)->group(function ()
             {
                 Route::get('/', 'showProfile');
-                Route::post('/updateProfile/{doctor}', 'updateProfile');
-                Route::post('/updatePassword/{doctor}', 'updatePassword');
+                Route::post('/updateProfile', 'updateProfile');
+                Route::post('/updatePassword', 'updatePassword');
 
             });
         });
