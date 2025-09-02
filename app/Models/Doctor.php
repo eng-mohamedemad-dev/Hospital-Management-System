@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use App\Models\Address;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -27,7 +28,6 @@ class Doctor extends Authenticatable
         'specialist_id',
         'hospital',
         'about',
-        'working_time',
         'str',
         'experience',
         'address',
@@ -77,5 +77,10 @@ class Doctor extends Authenticatable
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function address()
+    {
+        return $this->hasOne(Address::class);
     }
 }

@@ -1,11 +1,14 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Doctor\ProfileController;
 use App\Http\Controllers\Doctor\DoctorAuthController;
+use App\Http\Controllers\Doctor\AppointmentController;
 use App\Http\Controllers\Doctor\DoctorPasswordController;
 use App\Http\Controllers\Doctor\DoctorVreificationController;
-use Illuminate\Support\Facades\Route;
 
-Route::prefix('doctor')->group(function () {
+Route::prefix('doctor')->group(function ()
+{
     Route::controller(DoctorAuthController::class)->group(function () {
         Route::post('/register', 'register');
         Route::middleware('verify:doctor')->post('/login', 'login');
@@ -22,4 +25,33 @@ Route::prefix('doctor')->group(function () {
         Route::post('/check', 'check');
         Route::post('/reset', 'reset');
     });
+
+
+
+    Route::middleware('auth:sanctum')->group(function ()
+    {
+        Route::prefix('profile')->group(function()
+        {
+            Route::controller(ProfileController::class)->group(function ()
+            {
+                Route::get('/', 'showProfile');
+                Route::post('/updateProfile/{doctor}', 'updateProfile');
+                Route::post('/updatePassword/{doctor}', 'updatePassword');
+
+            });
+        });
+
+
+        Route::prefix('appointments')->group(function()
+        {
+            Route::controller(AppointmentController::class)->group(function ()
+            {
+                Route::get('/', 'index');
+                Route::post('/store', 'store');
+                Route::post('/update/{appointment}', 'updateAppointment')->name('appointments.update');
+
+            });
+        });
+    });
+
 });
