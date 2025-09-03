@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Doctor;
 
-use App\Models\Appointment;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AppointmentResource;
 use App\Interfaces\Doctor\AppointmentInterface;
@@ -13,35 +11,44 @@ class AppointmentController extends Controller
 {
     public function __construct(private AppointmentInterface $appointmentService)
     {
-
-    }
-
-    public function index()
-    {
-        //
     }
 
     public function store(AppointmentRequest $request)
     {
-        $data           = $request->validated();
-        $appointment    = $this->appointmentService->store($data);
+        $appointment = $this->appointmentService->createAppointment($request->validated());
 
-        if(!$appointment)
-        {
+        if (!$appointment) {
             return $this->error('Appointment not created');
         }
-        return $this->success('Appointment created successfully', new AppointmentResource($appointment));
+        
+        return $this->success('Appointment created successfully','');
     }
 
-    public function updateAppointment(AppointmentRequest $request,Appointment  $appointment)
+    public function index()
     {
-        $data           = $request->validated();
-        $appointment    = $this->appointmentService->updateAppointment($data,$appointment);
+        $appointments = $this->appointmentService->getAppointments();
+        return $this->success('Appointments retrieved successfully', AppointmentResource::collection($appointments));
+    }
 
-        if(!$appointment)
-        {
-            return $this->error('You are not authorized to update this appointment');
+    public function update(AppointmentRequest $request)
+    {
+        $appointment = $this->appointmentService->updateAppointment($request->validated());
+
+        if (!$appointment) {
+            return $this->error('Appointment not found or not authorized');
         }
-        return $this->success('Appointment updated successfully', new AppointmentResource($appointment));
+        
+        return $this->success('Appointment updated successfully',  '');
+    }
+
+    public function destroy($id)
+    {
+        $deleted = $this->appointmentService->deleteAppointment($id);
+
+        if (!$deleted) {
+            return $this->error('Appointment not found or not authorized');
+        }
+        
+        return $this->success('Appointment deleted successfully');
     }
 }

@@ -8,4 +8,6 @@ interface HomeInterface
     public function getSpecialists();
    
     public function searchDoctors($data);
+
+    public function getSearchLogs();
 }

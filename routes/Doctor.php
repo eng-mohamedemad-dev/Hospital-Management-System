@@ -6,6 +6,7 @@ use App\Http\Controllers\Doctor\DoctorAuthController;
 use App\Http\Controllers\Doctor\AppointmentController;
 use App\Http\Controllers\Doctor\DoctorPasswordController;
 use App\Http\Controllers\Doctor\DoctorVreificationController;
+use App\Http\Controllers\Doctor\AddessController;
 
 Route::prefix('doctor')->group(function ()
 {
@@ -28,30 +29,30 @@ Route::prefix('doctor')->group(function ()
 
 
 
-    Route::middleware('auth:sanctum')->group(function ()
-    {
         Route::prefix('profile')->group(function()
         {
-            Route::controller(ProfileController::class)->group(function ()
+            Route::controller(ProfileController::class)->middleware('auth:sanctum')->group(function ()
             {
                 Route::get('/', 'showProfile');
-                Route::post('/updateProfile', 'updateProfile');
-                Route::post('/updatePassword', 'updatePassword');
-
+                Route::put('/', 'updateProfile');
+                Route::delete('/', 'deleteAccount');
             });
         });
-
 
         Route::prefix('appointments')->group(function()
         {
-            Route::controller(AppointmentController::class)->group(function ()
+            Route::controller(AppointmentController::class)->middleware('auth:sanctum')->group(function ()
             {
                 Route::get('/', 'index');
-                Route::post('/store', 'store');
-                Route::post('/update/{appointment}', 'updateAppointment')->name('appointments.update');
-
+                Route::post('/', 'store');
+                Route::put('/', 'update');
+                Route::delete('/{id}', 'destroy');
             });
         });
-    });
+        Route::controller(AddessController::class)->group(function () {
+            Route::put('/address', 'update');
+            Route::delete('/address', 'destroy');
+        });
+        Route::resource('address', AddessController::class)->except(['show','update','destroy']);
 
 });

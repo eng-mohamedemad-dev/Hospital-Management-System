@@ -12,13 +12,11 @@ use App\Interfaces\Patient\HomeInterface;
 use App\Services\Doctor\DoctorAuthService;
 use App\Interfaces\Doctor\ProfileInterface;
 use App\Interfaces\Patient\ReviewInterface;
-use App\Services\Doctor\AppointmentService;
 use App\Services\Doctor\DoctorVerifyService;
 use App\Services\Patient\PatientAuthService;
 use App\Interfaces\Doctor\DoctorAuthInterface;
 use App\Services\Doctor\DoctorPasswordService;
 use App\Services\Patient\PatientVerifyService;
-use App\Interfaces\Doctor\AppointmentInterface;
 use App\Interfaces\Doctor\DoctorVerifyInterface;
 use App\Interfaces\Patient\PatientAuthInterface;
 use App\Services\Patient\PatientPasswordService;
@@ -26,6 +24,10 @@ use App\Interfaces\Doctor\DoctorPasswordInterface;
 use App\Interfaces\Patient\PatientVerifyInterface;
 use App\Interfaces\Patient\PatientPasswordInterface;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use App\Interfaces\Doctor\AppointmentInterface;
+use App\Services\Doctor\AppointmentService;
+use App\Interfaces\Doctor\AddressInterface;
+use App\Services\Doctor\AddressService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -42,8 +44,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PatientPasswordInterface::class, PatientPasswordService::class);
         $this->app->bind(ReviewInterface::class, ReviewService::class);
         $this->app->bind(HomeInterface::class, HomeService::class);
-        $this->app->bind(AppointmentInterface::class, AppointmentService::class);
         $this->app->bind(ProfileInterface::class, ProfileServices::class);
+        $this->app->bind(AppointmentInterface::class, AppointmentService::class);
+        $this->app->bind(AddressInterface::class, AddressService::class);
     }
 
     /**

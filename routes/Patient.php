@@ -33,5 +33,6 @@ Route::prefix('patient')->group(function () {
         Route::get('/doctors', 'getDoctors');
         Route::get('/specialists', 'getSpecialists');
         Route::get('/search', 'searchDoctors');
+        Route::get('/logs', 'getSearchLogs');
     });
 });

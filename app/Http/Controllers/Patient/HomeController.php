@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\Patient\HomeService;
 use App\Http\Resources\DoctorResource;
 use App\Http\Resources\SpecialistResouce;
-
+use App\Http\Resources\SearchLogResource;
 
 class HomeController extends Controller
 {
@@ -20,6 +20,7 @@ class HomeController extends Controller
     public function getDoctors()
     {
         $data = $this->homeService->getDoctors();
+
         if(!$data){
             return $this->error('No doctors found');
         }
@@ -42,5 +43,11 @@ class HomeController extends Controller
             return $this->error('No doctors found');
         }
         return $this->success('Doctors fetched successfully', DoctorResource::collection($data));
+    }
+
+    public function getSearchLogs()
+    {
+        $data = $this->homeService->getSearchLogs();
+        return $this->success('Search logs fetched successfully', SearchLogResource::collection($data));
     }
 }

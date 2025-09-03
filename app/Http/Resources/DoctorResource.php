@@ -19,17 +19,20 @@ class DoctorResource extends JsonResource
             'name' => $this->name ?? '',
             'specialist' => $this->specialist->name,
             'rating' => round($this->reviews_avg, 1),
-            'specialist_id' => $this->specialist->name,
+            'specialist' => $this->specialist->name,
             'hospital' => $this->hospital,
             'reviews_count' => $this->reviews_count,
             'image' => $this->image ? asset('storage/'.$this->image) : null,
-            'country' => $this->address->country ?? '',
-            'state' => $this->address->state ?? '',
-            'address' => $this->address->address ?? '',
             'str' => $this->str,
             'experience' => $this->experience,
             'about' => $this->about,
-            'email' => $this->email,
+            // 'location' => $this->address->map(function($address){
+            //     return [
+            //         'address' => $address->address,
+            //         'state' => $address->state,
+            //         'country' => $address->country,
+            //     ];
+            // })
         ];
     }
 }

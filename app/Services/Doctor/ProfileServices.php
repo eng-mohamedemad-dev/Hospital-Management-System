@@ -3,76 +3,58 @@
 namespace App\Services\Doctor;
 
 use App\Interfaces\Doctor\ProfileInterface;
-use App\Models\Address;
-use App\Models\Doctor;
-use Illuminate\Container\Attributes\Storage;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 
 class ProfileServices implements ProfileInterface
 {
+    private $doctor;
+    public function __construct()
+    {
+        $this->doctor = auth('doctor')->user();
+    }
+
     public function showProfile()
     {
-        $doctor = Doctor::with('specialist','address')->find(auth('doctor')->id());
-        if(!$doctor)
-        {
-            return false;
-        }
-        return $this->returnData($doctor);
+        return $this->doctor;
     }
 
     public function updateProfile($data)
     {
-        $doctor = Doctor::find(auth('doctor')->id());
-        if(!$doctor)
+        if (isset($data['current_password']) && isset($data['new_password']))
         {
-            return false;
+            $data['password'] = $this->updatePassword($data['current_password'], $data['new_password']);
         }
         if(isset($data['image']))
         {
-            $data['image'] = Storage::put('doctors', $data['image']);
-
-            // Delete old image if exists
-            if($doctor->image)
-            {
-                Storage::delete($doctor->image);
-            }
+            $data['image'] = $this->updateImage($data['image']);
         }
 
-        if(isset($data['email']) && $data['email'] !== $doctor->email)
-        {
-            $data['email_verified_at'] = null; // Reset email verification if email is changed
-        }
-        $doctor->update($data);
-        dd($data);
-        if (isset($data['address']) || isset($data['state']) || isset($data['country']) && empty($doctor->address))
-        {
-            Address::create(
-            [
-                'doctor_id' => $doctor->id,
-                'address' => $data['address'] ?? null,
-                'state' => $data['state'] ?? null,
-                'country' => $data['country'] ?? null,
-            ]); // Update or create address record
-        }else
-        {
-            $doctor->address->update(
-            [
-                'address' => $data['address'] ?? $doctor->address->address,
-                'state' => $data['state'] ?? $doctor->address->state,
-                'country' => $data['country'] ?? $doctor->address->country,
-            ]);
-        }
-        return $this->returnData($doctor);
+        return $this->doctor->update($data);
+    }
+
+    public function deleteAccount()
+    {
+        return $this->doctor->delete();
     }
 
 
-    public function updatePassword($data,$doctor)
+    private function updatePassword($current_password,$new_password)
     {
-        if (! Hash::check($data['current_password'], $doctor->password))
+        if (! Hash::check($current_password, $this->doctor->password))
         {
             return false;
         }
-        $doctor->update(['password' => Hash::make($data['new_password'])]);
-        return true;
+        return $new_password;
+    }
+
+    private function updateImage($image)
+    {
+        $image = Storage::disk('public')->put('doctors', $image);
+        if($this->doctor->image)
+        {
+            Storage::delete($this->doctor->image);
+        }
+        return $image;
     }
 }

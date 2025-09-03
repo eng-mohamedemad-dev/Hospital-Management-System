@@ -67,4 +67,9 @@ class Patient extends Authenticatable
     {
         return $this->hasMany(Review::class);
     }
+
+    public function searchLogs()
+    {
+        return $this->hasMany(SearchLog::class);
+    }
 }

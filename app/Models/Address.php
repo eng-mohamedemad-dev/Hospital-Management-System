@@ -8,10 +8,8 @@ class Address extends Model
 {
     protected $fillable = [
         'doctor_id',
-        'street',
-        'city',
         'state',
-        'zip_code',
+        'address',
         'country',
     ];
 

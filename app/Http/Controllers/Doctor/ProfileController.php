@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Doctor;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DoctorResource;
 use App\Interfaces\Doctor\ProfileInterface;
-use App\Models\Doctor;
+use App\Http\Requests\Doctor\ProfileUpdateRequest;
 
 class ProfileController extends Controller
 {
@@ -17,39 +16,29 @@ class ProfileController extends Controller
 
     public function showProfile()
     {
-        $doctor = Doctor::with('address')->find(auth('doctor')->id());
-        // dd($doctor);
+        $doctor = $this->profileService->showProfile();
 
-        if(!$doctor)
-        {
-            return $this->error('Doctor not found');
-        }
         return $this->success('Doctor profile retrieved successfully', new DoctorResource($doctor));
     }
 
 
-    public function updateProfile(Request $request)
+    public function updateProfile(ProfileUpdateRequest $request)
     {
-        $data   = $request->all();
-        $doctor = Doctor::find(auth('doctor')->id());
-
-        // dd($doctor);
-        if(!$doctor)
-        {
-            return $this->error('You are not authorized to update this profile');
+        $data   = $request->validated();
+        $doctor = $this->profileService->updateProfile($data);
+        if(!$doctor){
+            return $this->error('Password is incorrect');
         }
-        return $this->success('Doctor profile updated successfully', new DoctorResource($doctor));
+        return $this->success('Doctor profile updated successfully','');
     }
 
-    public function updatePassword(Request $request, $doctor)
+    public function deleteAccount()
     {
-        $data   = $request->all();
-        $doctor = $this->profileService->updatePassword($data,$doctor);
-
-        if(!$doctor)
-        {
-            return $this->error('You are not authorized to update this password');
+        $doctor = $this->profileService->deleteAccount();
+        return $this->success('Doctor account deleted successfully');
+        if(!$doctor){
+            return $this->error('Doctor account not deleted');
         }
-        return $this->success('Doctor password updated successfully', new DoctorResource($doctor));
     }
+
 }

@@ -2,33 +2,32 @@
 
 namespace App\Http\Requests\Doctor;
 
-use Illuminate\Validation\Rule;
 use App\Http\Requests\BaseRequest;
-use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Validation\Rule;
 
 class AppointmentRequest extends BaseRequest
 {
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
     public function rules(): array
     {
-        $appointmentId = $this->route('appointment') ? $this->route('appointment') : null;
-        // dd($appointmentId);
-        return
-        [
-             'day'       =>
-             [
-                'required',
-                'string',
-                'max:100',
-                Rule::unique('appointments')->ignore($appointmentId) ->where(function ($query)
-                {
-                    return $query->where('doctor_id', $this->doctor_id);
-                }),
-            ],
-            'time_from' => 'required|string|max:50',
-            'time_to'   => 'required|string|max:50',
-            'doctor_id' => 'required|exists:doctors,id',
+        if (request()->method() === 'PUT') {
+        return [
+            'appointments' => 'required|array',
+                'appointments.*.time_from' => 'required|date_format:H:i',
+                'appointments.*.time_to' => 'required|date_format:H:i|after:time_from',
+                'appointments.*.id' => 'sometimes|integer|exists:appointments,id',
+            ];
+        }
+        return [
+            'appointments' => 'required|array',
+            'appointments.*.day' => 'required|string|in:Saturday,Sunday,Monday,Tuesday,Wednesday,Thursday,Friday|'.Rule::unique('appointments', 'day')->ignore(auth('doctor')->id()),
+            'appointments.*.time_from' => 'required|date_format:H:i',
+            'appointments.*.time_to' => 'required|date_format:H:i|after:time_from',
         ];
     }
 }
