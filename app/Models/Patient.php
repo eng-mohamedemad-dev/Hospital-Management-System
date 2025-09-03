@@ -62,4 +62,14 @@ class Patient extends Authenticatable
     {
         return $this->morphMany(VerificationCode::class, 'user');
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function searchLogs()
+    {
+        return $this->hasMany(SearchLog::class);
+    }
 }

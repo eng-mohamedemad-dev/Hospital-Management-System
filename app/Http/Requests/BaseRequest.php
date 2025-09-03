@@ -7,6 +7,12 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @mixin \Illuminate\Http\Request
+ * @method mixed input(string $key = null, mixed $default = null)
+ * @method void merge(array $input)
+ * @method mixed route(string|null $key = null, mixed $default = null)
+ */
 class BaseRequest extends FormRequest
 {
     use ApiResponse;

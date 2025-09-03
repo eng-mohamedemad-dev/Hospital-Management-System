@@ -7,6 +7,7 @@ use App\Http\Requests\Doctor\DoctorLoginRequest;
 use App\Http\Requests\Doctor\DoctorRegisterRequest;
 use App\Interfaces\Doctor\DoctorAuthInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DoctorAuthController extends Controller
 {

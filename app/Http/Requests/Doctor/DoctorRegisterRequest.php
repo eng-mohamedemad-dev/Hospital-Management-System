@@ -17,7 +17,7 @@ class DoctorRegisterRequest extends BaseRequest
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:doctors,email',
             'password' => 'required|string|min:8',
-            'specialist' => 'required|string|max:255',
+            'specialist_id' => 'required|integer|exists:specialists,id',
             'hospital' => 'required|string|max:255',
             'about' => 'required|string|max:255',
             'str' => 'required|string|max:255',

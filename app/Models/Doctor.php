@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\Address;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -24,16 +25,18 @@ class Doctor extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'specialist',
+        'specialist_id',
         'hospital',
         'about',
-        'working_time',
         'str',
         'experience',
         'address',
         'image',
         'email',
         'password',
+        'reviews_count',
+        'reviews_sum',
+        'reviews_avg',
     ];
 
     /**
@@ -55,6 +58,7 @@ class Doctor extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'reviews_avg' => 'decimal:2',
         ];
     }
 
@@ -64,5 +68,38 @@ class Doctor extends Authenticatable
     public function verificationCodes(): MorphMany
     {
         return $this->morphMany(VerificationCode::class, 'user');
+    }
+
+    public function specialist()
+    {
+        return $this->belongsTo(Specialist::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function address()
+    {
+        return $this->hasOne(Address::class);
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($doctor) {
+            $doctor->address()->delete();
+            $doctor->appointments()->delete();
+            $doctor->reviews()->delete();
+            $doctor->verificationCodes()->delete();
+            $doctor->tokens()->delete();
+            $doctor->image ? Storage::delete($doctor->image) : null;
+        });
     }
 }
